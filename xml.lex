@@ -57,6 +57,10 @@ CIERRA_TAG <\/{NOMBRE}>
 
 {CIERRA_TAG} {
 	tags_abiertos--;
+	if (tags_abiertos < 0) {
+		printf("\nERROR: no se abrió el tag %s\n", yytext);
+		exit(3);
+	}
 	fprintf(stderr, "tags_abiertos: %d\n", tags_abiertos);
 	fprintf(stderr, "yytext: %s\n", yytext);
 	fprintf(stderr, "stack: %s\n", stack[tags_abiertos - offset]);
@@ -66,7 +70,7 @@ CIERRA_TAG <\/{NOMBRE}>
 	char* nombre_tag_tope_stack = &stack[tags_abiertos - offset][1];
 	int largo_tags = yyleng - 3;
 	if (strncmp(nombre_tag_leido, nombre_tag_tope_stack, largo_tags)) {
-		printf("ERROR: falta cerrar el tag %s\n", stack[tags_abiertos - offset]);
+		printf("\nERROR: falta cerrar el tag %s\n", stack[tags_abiertos - offset]);
 		exit(1);
 	}
 }
@@ -83,7 +87,7 @@ int main(int argc, char* argv[])
 	fclose(yyin);
 	if (tags_abiertos != 0)
 	{
-		printf("hay %d tag(s) sin cerrar\n", tags_abiertos);
+		printf("\nHay %d tag(s) sin cerrar\n", tags_abiertos);
 		return 2;
 	}
 	printf("No se encontraron errores en el documento.\n");
