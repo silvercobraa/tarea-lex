@@ -23,7 +23,7 @@ ABRE_TAG <{NOMBRE}(\ {ATRIBUTO})*>
 CIERRA_TAG <\/{NOMBRE}>
 
 %{
-	int offset = 0; // debe ser cero o uno?
+	int offset = 0;
 	int tags_abiertos = 0;
 	int tags_cerrados = 0;
 	char stack[1024][1024];
