@@ -23,10 +23,28 @@ ABRE_TAG <{NOMBRE}(\ {ATRIBUTO})*>
 CIERRA_TAG <\/{NOMBRE}>
 
 %{
+	#define LEN_MAX_MATCH 1024
+	#define MAX_TAGS 1024
+	
 	int offset = 0;
 	int tags_abiertos = 0;
 	int tags_cerrados = 0;
-	char stack[1024][1024];
+	char stack[MAX_TAGS][LEN_MAX_MATCH];
+	
+	void verificar_largo(int largo_match) {
+		if (largo_match >= LEN_MAX_MATCH) {
+			printf("\nERROR: match demasiado largo\n");
+			exit(4);
+
+		}
+	}
+	void verificar_cantidad_tags() {
+		if (tags_abiertos >= MAX_TAGS) {
+			printf("\nERROR: muchos tags\n");
+			exit(5);
+
+		}
+	}
 %}
 
 %%
@@ -44,12 +62,16 @@ CIERRA_TAG <\/{NOMBRE}>
 }
 
 {ABRE_TAG_SIMPLE} {
+	verificar_largo(yyleng);
+	verificar_cantidad_tags();
 	fprintf(stderr, "Apilando %s...\n", yytext);
 	strcpy(stack[tags_abiertos], yytext);
 	tags_abiertos++;
 }
 
 {ABRE_TAG} {
+	verificar_largo(yyleng);
+	verificar_cantidad_tags();
 	fprintf(stderr, "Apilando %s...\n", yytext);
 	strcpy(stack[tags_abiertos], yytext);
 	tags_abiertos++;
